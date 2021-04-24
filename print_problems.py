@@ -1,23 +1,10 @@
-import sys
-
-sys.path.insert(1, ".lib")
-
-import epd2in7b
-
+from lib.epd2in7b import EPD, EPD_HEIGHT, EPD_WIDTH
 from PIL import Image, ImageDraw, ImageFont
 
-epd = epd2in7b.EPD()  # get the display
 
-epd.init()  # initialize the display
-
-print("Clear...")  # prints to console, not the display, for debugging
-
-# epd.Clear(0xFF)            # clear the display (this also throws an error when in code)
-
-
-def printToDisplay(string):
-    HBlackImage = Image.new("1", (epd2in7b.EPD_HEIGHT, epd2in7b.EPD_WIDTH), 264)
-    HRedImage = Image.new("1", (epd2in7b.EPD_HEIGHT, epd2in7b.EPD_WIDTH), 176)
+def printToDisplay(epd, string):
+    HBlackImage = Image.new("1", (EPD_HEIGHT, EPD_WIDTH), 264)
+    HRedImage = Image.new("1", (EPD_HEIGHT, EPD_WIDTH), 176)
 
     draw = ImageDraw.Draw(
         HBlackImage
@@ -27,7 +14,16 @@ def printToDisplay(string):
     )  # Create our font, passing in the font file and font size
 
     draw.text((25, 65), string, font=font, fill=0)
-    epd.display(epd.getbuffer(HBlackImage), epd.getbuffer(HRedImage))
+    try:
+        epd.display(epd.getbuffer(HBlackImage), epd.getbuffer(HRedImage))
+    except Exception as e:
+        # Try to figure out why it's sad
+        print(f"Could not call display on {epd}:\n{e}")
 
 
-printToDisplay("Hello, World!")
+epd = EPD()  # get the display
+epd.init()  # initialize the display
+
+print("Clear...")  # prints to console, not the display, for debugging
+# epd.Clear(0xFF)            # clear the display (this also throws an error when in code)
+printToDisplay(epd, "Hello, World!")
