@@ -1,4 +1,4 @@
-from lib.epd2in7b import EPD, EPD_HEIGHT, EPD_WIDTH
+from lib.epd2in7b_V2 import EPD, EPD_HEIGHT, EPD_WIDTH
 from PIL import Image, ImageDraw, ImageFont
 
 
